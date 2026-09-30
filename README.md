@@ -69,7 +69,7 @@ adaptive-learning-simulation
 
 | パス | 役割 |
 | --- | --- |
-| `docs/` | 研究設計、生成学習者モデル、出題方策、指標、関連研究 |
+| `docs/` | 要件定義（`docs/requirements.md`）、研究設計、生成学習者モデル、出題方策、指標、関連研究 |
 | `configs/` | 実験設定（空） |
 | `src/` | Julia パッケージ `AdaptiveLearningSimulation`（研究ロジックは未実装） |
 | `test/` | Julia の package test |

@@ -130,3 +130,19 @@ practice opportunity → learning
 - その他の、正誤に依存する学習規則（correctness-dependent learning rules）
 
 感度分析用の世界は、これらの修飾のどれを加えるかを述べます。ラベルなしに、主たる推定と混ぜません。
+
+## 実装対応
+
+コードは `src/als/generative/` にあり、この文書の型と差し替え口だけを置く。World A / B-E / B-P / C の更新式、BKT / PFA / HLR、出題方策はここにはない。
+
+| 文書 | コード |
+| --- | --- |
+| 潜在能力 `a` を正本とし、`K = sigmoid(a)` を同じ量の確率尺度の見方とする | `ConceptState.ability` が保存値。`ConceptState.competence` は `sigmoid` による導出 |
+| 問題難易度 `d_q` | `Item.difficulty` |
+| 回答式の有力候補 `G + (1 - G - S) * sigmoid(a - d)` | `LogisticGuessSlipResponse`。`ResponseModel` の一実装であり、研究上の確定式ではない |
+| 時間、忘却、練習による学習増分、回答確率、状態更新を世界ごとに換える | `GenerativeWorld` |
+| 練習機会が学習を更新し、正誤はその入力ではない | `practice_opportunity` は更新前の状態から回答を引き、`update_state` は正誤を受け取らない |
+| 再現性 | `SeededRng`。同じ seed と同じ呼び出し順で同じ乱数列になる |
+| パラメータはコードに埋め込みすぎない | `LearnerParameters`。数値の研究デフォルトは未設定 |
+
+`K` を直接更新する世界は、`a` を取る回答モデルへ渡す前に `a = logit(K)` へ戻す。その対応は各 World の実装が持つ。忘却の追加係数（たとえば World B-P の指数）は `LearnerParameters.forgetting_extras` に名前付きで置く。

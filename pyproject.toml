@@ -1,0 +1,10 @@
+[project]
+name = "adaptive-learning-simulation"
+version = "0.1.0"
+description = "Simulation of how learner-model prediction differences propagate into item ranking, selection, and learning utility."
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
