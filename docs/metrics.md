@@ -1,51 +1,51 @@
-# Metrics
+# 指標
 
-Metrics follow the four stages of the study. Each stage has its own quantities. A custom propagation rate is not defined. Propagation (RQ5) is examined by comparing differences across these stages, once the stage metrics themselves are specified precisely enough to support that comparison.
+指標は、この研究の4段階に従います。各段階に、それぞれの量があります。独自の伝播率は定義しません。伝播（RQ5）は、段階ごとの指標が比較に耐える精度で指定されてから、段階をまたいだ差を比べて調べます。
 
-Definitions below name the quantity each metric is meant to capture. Estimators, tie handling, and the reference policy for regret are not frozen.
+以下の定義は、各指標が捉えようとする量の名前です。推定量、同点の扱い、後悔値の参照とする出題方策は固定していません。
 
-## Prediction Metrics
+## 予測の指標（Prediction Metrics）
 
-Scored from held-out responses, or from the true latent state when the generative world exposes it.
+ホールドアウトした回答から採点します。生成世界が真の潜在状態を評価者に見せるときは、その状態からも採点します。
 
-- **Brier Score** — mean squared error of predicted correctness probabilities.
-- **Log Loss** — negative log likelihood of observed correctness under the predicted probabilities.
-- **AUC** — ranking discrimination between correct and incorrect responses.
-- **Calibration** — agreement between predicted probabilities and observed frequencies. The error summary (binning, ECE, or another calibration error) is not chosen yet.
-- **RMSE / MAE** — error of a latent-state estimate against the generative state's competence, when that state is observable to the evaluator. These are state metrics, not response metrics.
+- **Brier Score** — 予測した正答確率の平均二乗誤差。
+- **Log Loss** — 予測確率のもとでの、観測された正誤の負の対数尤度。
+- **AUC** — 正答と誤答を順位で判別する度合い。
+- **キャリブレーション（Calibration）** — 予測確率と観測頻度の一致。誤差の要約（ビン分割、ECE、または別のキャリブレーション誤差）は未選択。
+- **RMSE / MAE** — 生成状態のコンピテンス（competence）に対する、潜在状態の推定の誤差。その状態が評価者から観測できるときに使う。これらは状態の指標であり、回答の指標ではない。
 
-State RMSE and State MAE are only defined for worlds and models that share a stated correspondence between the model state and the generative competence. That correspondence is not assumed to exist for every model.
+状態の RMSE（State RMSE）と状態の MAE（State MAE）が定義されるのは、モデルの状態と生成側のコンピテンスとの対応が明示されている世界とモデルだけです。その対応がすべてのモデルにあるとは仮定しません。
 
-## Ranking Metrics
+## 問題順位付けの指標（Ranking Metrics）
 
-Compared between two rankings of the same candidate set at the same decision point.
+同じ決定時点で、同じ候補集合に対する二つの順位を比べます。
 
-- **Spearman** — rank correlation of the two full orderings.
-- **Kendall** — pairwise order agreement (Kendall's tau).
-- **Top-k overlap** — size of the intersection of the two top-k sets, scaled in a way still to be fixed.
-- **Rank displacement** — movement of items between the two rankings. The aggregation (mean absolute rank change, or another summary) is not chosen yet.
+- **スピアマン順位相関（Spearman）** — 二つの全順序の順位相関。
+- **ケンドールの順位相関（Kendall）** — 対ごとの順序の一致（Kendall's tau）。
+- **上位k件の重なり（Top-k overlap）** — 二つの上位k件の積集合の大きさ。基準化の仕方は未確定。
+- **順位の変位（Rank displacement）** — 二つの順位のあいだでの項目の移動。集約（順位変化の絶対値の平均、または別の要約）は未選択。
 
-## Selection Metrics
+## 問題選択の指標（Selection Metrics）
 
-Compared between the questions two policies actually select.
+二つの出題方策（Policy）が実際に選んだ問題を比べます。
 
-- **Top-1 agreement** — rate at which the two policies select the same question.
-- **Jaccard** — Jaccard similarity of the selected sets when a policy selects more than one item, and of top-k sets when the comparison is defined on shortlists.
-- **Disagreement rate** — rate at which selections differ.
-- **Regret** — utility gap between the selected question and a reference selection. The reference (oracle, or another named policy) and the utility inside the gap are not chosen yet.
+- **第1位の一致率（Top-1 agreement）** — 二つの出題方策が同じ問題を選ぶ割合。
+- **ジャカード類似度（Jaccard）** — 出題方策が複数項目を選ぶときの選択集合のジャカード類似度。比較を候補の短い一覧の上で定義するときは、上位k件の集合についても同様。
+- **不一致率（Disagreement rate）** — 選択が異なる割合。
+- **後悔値（Regret）** — 選ばれた問題と、参照となる選択との効用の差。参照（オラクル、または名前を付けた別の出題方策）と、差の中の効用は未選択。
 
-Weighted sampling, as in Current ConceptBook Weighting, makes selection stochastic. Agreement and regret for that policy need a declared treatment of random draws (shared random seed, expected selection, or a fixed number of replicates).
+現行ConceptBook重み付け（Current ConceptBook Weighting）のような重み付き抽出は、選択を確率的にします。その出題方策の一致と後悔値には、乱数の扱いを宣言する必要があります。共有する乱数シード、期待される選択、または決めた回数の反復です。
 
-## Utility Metrics
+## 効用の指標（Utility Metrics）
 
-Scored on completed simulated trajectories.
+完了したシミュレーション上の軌跡に対して採点します。
 
-- **Trials to Mastery** — number of practice trials until the mastery criterion is met. Primary candidate for RQ4. The mastery criterion is not defined yet.
-- **Time to Mastery** — simulated time until the same criterion, in worlds where time is explicit.
-- **Retention** — competence at a later time, after a stated delay. The delay and the retention summary are not defined yet.
-- **Final Mastery** — competence at the end of a fixed horizon, or at mastery, as declared by the experiment.
-- **Wasted Practice** — practice delivered on material that the declared waste criterion counts as unproductive. The criterion is not defined yet.
-- **Neglected Concept** — rate or count of concepts that receive too little practice under a declared neglect criterion. The criterion is not defined yet.
-- **Cumulative Regret** — selection regret accumulated along a trajectory. It depends on the selection-regret reference above.
+- **習熟到達までの試行数（Trials to Mastery）** — 習熟基準を満たすまでの練習試行の数。RQ4 の主候補。習熟基準は未定義。
+- **習熟到達までの時間（Time to Mastery）** — 時間が明示される世界で、同じ基準に達するまでのシミュレーション上の時間。
+- **保持（Retention）** — 述べた遅延のあと、より後の時点でのコンピテンス。遅延と、保持の要約は未定義。
+- **最終習熟度（Final Mastery）** — 固定した期間の終わり、または習熟時点でのコンピテンス。どちらであるかは実験が宣言する。
+- **無駄な練習（Wasted Practice）** — 宣言した「無駄」の基準が非生産的と数える教材に対して行われた練習。基準は未定義。
+- **練習不足の概念（Neglected Concept）** — 宣言した不足の基準のもとで、練習が少なすぎる概念の割合または件数。基準は未定義。
+- **累積後悔値（Cumulative Regret）** — 軌跡に沿って積み上げた選択後悔値（Selection Regret）。上に書いた、選択後悔値の参照に依存する。
 
-Utility metrics are properties of a policy inside a generative world. A higher utility in simulation is not a measurement of human learning.
+効用の指標は、生成世界の中の出題方策の性質です。シミュレーションで効用が高いことは、人間の学習の測定ではありません。

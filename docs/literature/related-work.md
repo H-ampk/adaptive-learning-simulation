@@ -1,105 +1,105 @@
-# Related Work
+# 関連研究
 
-This note groups research lines that the study design draws on. It is a map for later reading, not a finished review. Bibliographic details should be checked and completed before any paper cites them. No BibTeX file or reference manager is part of this repository yet.
+このメモは、研究設計が依拠する研究の系統をまとめたものです。後で読むための地図であり、完成したレビューではありません。論文で引用する前に、書誌情報を確認し、補う必要があります。BibTeX ファイルや文献管理ツールは、まだこのリポジトリに含めていません。
 
-Entries are labeled as representative works to confirm. The short gloss says why the line matters here. It does not summarize a paper's results as established fact.
+各項目は、確認すべき代表的な仕事としてラベルしています。短い説明は、その系統がここでなぜ重要かを述べます。論文の結果を、確立した事実として要約するものではありません。
 
-## Simulated students in knowledge-tracing evaluation
+## Knowledge Tracing 評価における模擬学習者
 
-Knowledge-tracing models are often scored on log data, and sometimes also on data from a simulated student whose learning rule is known.
+Knowledge Tracing のモデルは、ログデータで採点されることが多く、学習規則が既知の模擬学習者から作ったデータで採点されることもあります。
 
-Representative works to confirm:
+確認すべき代表的な仕事：
 
-- Corbett and Anderson's knowledge tracing work, which introduced the BKT family inside a mastery-learning tutor.
-- Piech and colleagues' Deep Knowledge Tracing, which reported both real and simulated settings in the evaluation of a neural tracer.
-- Khajah, Lindsey, and Mozer's comparison of deep knowledge tracing with extended BKT, including simulated data, under a title of the form "How deep is knowledge tracing?"
+- Corbett と Anderson の Knowledge Tracing。習熟学習のチューターの中で BKT の系統を導入した仕事。
+- Piech らによる Deep Knowledge Tracing。ニューラルなトレーサーの評価で、実データとシミュレーションの両方を報告している。
+- Khajah、Lindsey、Mozer による、拡張した BKT と deep knowledge tracing の比較。シミュレーションデータを含み、題名は "How deep is knowledge tracing?" の形である。
 
-Use in this repository: simulated students make the latent state available, so prediction metrics and state-error metrics can be reported together. The generating rule must stay independent of the models being scored.
+このリポジトリでの使い方：模擬学習者は潜在状態を利用可能にするので、予測の指標と状態誤差の指標を一緒に報告できます。生成規則は、採点されるモデルから独立したままにします。
 
-## Knowledge tracing in a mastery-learning context
+## 習熟学習の文脈における Knowledge Tracing
 
-A large part of the BKT literature evaluates models by how they behave inside mastery practice, not only by next-step accuracy.
+BKT の文献の大きな部分は、次の一歩の正確さだけではなく、習熟のための練習の中でモデルがどう振る舞うかによってモデルを評価します。
 
-Representative works to confirm:
+確認すべき代表的な仕事：
 
-- The cognitive-tutor / knowledge-tracing line associated with Corbett and Anderson, where a mastery criterion stops practice.
-- Lee and Brunskill's educational-data-mining paper on individualizing student models and the number of practice opportunities a student would receive.
+- Corbett と Anderson に連なる cognitive tutor / Knowledge Tracing の系統。習熟基準が練習を止める。
+- Lee と Brunskill による、教育データマイニングの論文。学習者モデルを個別化することと、学習者が受ける練習機会の数を扱っている。
 
-Use in this repository: Trials to Mastery is the primary utility candidate because mastery learning is the decision context, not only next-item classification.
+このリポジトリでの使い方：習熟到達までの試行数（Trials to Mastery）を効用の主候補にするのは、決定の文脈が習熟学習であり、次項目の分類だけではないからです。
 
-## Adaptive practice scheduling
+## 適応的な練習スケジューリング
 
-Scheduling policies choose what to practice next, often with an explicit memory or half-life model.
+スケジューリングの出題方策（Policy）は、次に何を練習するかを選びます。明示的な記憶モデルや半減期モデルを伴うことが多いです。
 
-Representative works to confirm:
+確認すべき代表的な仕事：
 
-- Settles and Meeder's trainable spaced-repetition model (half-life regression) for language learning.
-- Lindsey, Shroyer, Pashler, and Mozer on personalized review and long-term retention.
-- Pavlik and Anderson on computing a practice schedule from an activation-based memory model.
+- Settles と Meeder による、言語学習のための訓練可能な間隔反復モデル（half-life regression）。
+- Lindsey、Shroyer、Pashler、Mozer による、個別化した復習と長期保持。
+- Pavlik と Anderson による、活性化に基づく記憶モデルから練習スケジュールを計算する仕事。
 
-Use in this repository: HLR-based and spacing-aware policies belong to this line. The policy that turns a half-life or activation into a ranking still has to be specified; the model paper does not fix that map for this study.
+このリポジトリでの使い方：HLR に基づく出題方策と、間隔を考慮する出題方策は、この系統に属します。半減期や活性化を問題順位付けへ変える出題方策は、まだ指定が必要です。モデルの論文が、この研究のためのその対応を固定しているわけではありません。
 
-## Prediction accuracy and pedagogical decision quality
+## 予測の正確さと教育上の決定の質
 
-Next-step metrics (AUC, log loss, Brier score) and the quality of an instructional decision are related but are not the same measurement.
+次の一歩の指標（AUC、Log Loss、Brier Score）と、指導上の決定の質は関係しますが、同じ測定ではありません。
 
-Representative concern, with citations still to be pinned down:
+引用をまだ特定しきれていない、代表的な問題意識：
 
-- Work in the educational-data-mining and intelligent-tutoring literature that tracks how a change in the student model changes downstream practice, including the individualization study named above.
-- Broader arguments that a model can improve predictive fit without changing the decision a tutor would make, or the reverse.
+- 教育データマイニングと知的チュータリングの文献のうち、学習者モデルの変化が下流の練習をどう変えるかを追う仕事。上で名前を挙げた個別化の研究を含む。
+- より広い議論。予測の当てはまりは改善しても、チューターが下す決定は変わらない、またはその逆、という主張。
 
-Use in this repository: RQ2 through RQ6 exist because a gain on RQ1 is not assumed to appear as a gain in selection or utility. The central hypothesis is the thing to be measured across those layers.
+このリポジトリでの使い方：RQ2 から RQ6 があるのは、RQ1 での改善が、問題選択や学習効用の改善として現れるとは仮定しないからです。中心仮説は、それらの層をまたいで測る対象です。
 
-This note does not treat any single paper as having settled that hypothesis.
+このメモは、その仮説を決着させたとみなす論文を一つも置きません。
 
-## Exponential forgetting
+## 指数忘却
 
-One standard family writes retention as an exponential decay in the time since practice.
+標準的な一族の一つは、保持を、練習からの時間に対する指数減衰として書きます。
 
-Representative anchors to confirm:
+確認すべき拠り所：
 
-- Exponential decay as used in memory models and in BKT variants that add a forgetting transition.
-- Discussions that contrast this form with power-law forgetting, including the papers listed in the next section.
+- 記憶モデル、および忘却の遷移を加えた BKT の変種で使われる指数減衰。
+- この形とべき乗忘却を対比する議論。次節に挙げる論文を含む。
 
-Use in this repository: World B-E adopts exponential forgetting as a declared assumption, through the candidate update `K(t + Δ) = K(t) exp(-λ Δ)`. It is one analysis world, not a claim that human forgetting is exponential.
+このリポジトリでの使い方：World B-E は、候補の更新式 `K(t + Δ) = K(t) exp(-λ Δ)` を通じて、指数忘却（Exponential Forgetting）を宣言した仮定として採用します。これは一つの分析用の世界であり、人間の忘却が指数であるという主張ではありません。
 
-## Power-law forgetting
+## べき乗忘却
 
-Another standard family writes retention as a power function of time or of a lag term.
+もう一つの標準的な一族は、保持を、時間またはラグ項のべき関数として書きます。
 
-Representative works to confirm:
+確認すべき代表的な仕事：
 
-- Wixted and Ebbesen, "On the form of forgetting," arguing at the time for a power function over an exponential on aggregate forgetting curves.
-- Anderson and Schooler, "Reflections of the environment in memory," connecting a power law of forgetting to environmental statistics and to the ACT-R activation tradition.
-- Later methodological work asking whether an apparent power law can arise from averaging heterogeneous exponential curves. Exact citations are still to be added.
+- Wixted と Ebbesen の "On the form of forgetting"。当時、集約した忘却曲線について、指数よりべき関数を主張した。
+- Anderson と Schooler の "Reflections of the environment in memory"。忘却のべき乗則を、環境の統計および ACT-R の活性化の伝統と結び付けている。
+- 見かけのべき乗則が、異質な指数曲線を平均したことから生じうるかを問う、後の方法論的な仕事。正確な引用は未追加。
 
-Use in this repository: World B-P adopts power-law forgetting as a second declared assumption, through the candidate update `K(t + Δ) = K(t) (1 + λ Δ)^(-β)`. B-E and B-P are both primary candidates so a result can be checked for dependence on the forgetting family.
+このリポジトリでの使い方：World B-P は、候補の更新式 `K(t + Δ) = K(t) (1 + λ Δ)^(-β)` を通じて、べき乗忘却（Power-law Forgetting）を第二の宣言した仮定として採用します。B-E と B-P をどちらも主候補にするのは、結果が忘却の族に依存するかを確認できるようにするためです。
 
-## ACT-R and Pavlik–Anderson spacing models
+## ACT-R と Pavlik–Anderson の間隔モデル
 
-Activation-based models explain spacing by the history of practice traces, not by a single lag applied to a scalar competence.
+活性化に基づくモデルは、間隔を、スカラーのコンピテンスへ単一のラグを掛けることではなく、練習の痕跡の履歴によって説明します。
 
-Representative works to confirm:
+確認すべき代表的な仕事：
 
-- Pavlik and Anderson's activation-based model of practice and forgetting in vocabulary, and the spacing effect.
-- Pavlik and Anderson's later use of that model to compute a practice schedule.
-- The ACT-R base-level learning and activation equations those models draw on (Anderson and Lebiere, and related ACT-R statements). Exact edition and equation numbers are to be fixed when World C is specified.
+- Pavlik と Anderson による、語彙の練習と忘却、および間隔効果の、活性化に基づくモデル。
+- Pavlik と Anderson が後に、そのモデルで練習スケジュールを計算した仕事。
+- それらのモデルが依拠する ACT-R の base-level learning と活性化の式（Anderson と Lebiere、および関連する ACT-R の記述）。版と式番号は、World C を仕様化するときに固定する。
 
-Use in this repository: World C is a stress test in this family. Its equation is deliberately unset until the state, the trace decay, and the link to the response probability are written down.
+このリポジトリでの使い方：World C は、この一族でのストレステストです。状態、痕跡の減衰、反応確率へのつながりが書かれるまで、式は意図的に未設定です。
 
-## Synthetic learners in adaptive-learning evaluation
+## 適応学習の評価における合成学習者
 
-When a live student experiment is too costly for every policy variant, studies evaluate schedulers against a synthetic learner and treat the outcome as conditional on that learner.
+すべての出題方策の変種について、実際の学習者を使った実験をする費用が大きすぎるとき、研究はスケジューラを合成学習者に対して評価し、結果をその学習者に条件付けられたものとして扱います。
 
-Representative practice to confirm with specific citations:
+具体的な引用とともに確認すべきやり方：
 
-- Policy comparisons inside simulated tutors, where the simulator is published along with the policy.
-- Evaluations that report both predictive fit and a teaching outcome (practice count, delayed recall, or a mastery proxy).
+- シミュレートしたチューターの内部での出題方策の比較。シミュレーターが出題方策とともに公開されているもの。
+- 予測の当てはまりと、指導上の結果（練習回数、遅延後の再生、または習熟の代理指標）の両方を報告する評価。
 
-Use in this repository: the synthetic learner is useful because the latent state and the counterfactual selection are observable. The corresponding limit is part of the study design: utility is a property of the named world, and a simulation result is not reported as a human learning effect.
+このリポジトリでの使い方：合成学習者が有用なのは、潜在状態と、反事実の問題選択が観測できるからです。対応する限界は研究設計の一部です。効用は名前を付けた世界の性質であり、シミュレーション結果を人間の学習効果としては報告しません。
 
-## What this file is not
+## このファイルがそうではないもの
 
-- It is not a claim that the central hypothesis has already been shown.
-- It is not a complete or citable bibliography.
-- It does not fix World C, the response model, or any policy scoring rule. Those remain in the design documents as open specifications.
+- 中心仮説がすでに示された、という主張ではない。
+- 完全で、引用に使える文献表ではない。
+- World C、回答モデル、出題方策のスコア規則を固定するものではない。それらは設計文書の中で、未確定の仕様のままである。

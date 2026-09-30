@@ -1,184 +1,184 @@
-# Research Design
+# 研究設計
 
-## Purpose
+## 目的
 
-This repository studies how differences in knowledge-tracing prediction quality propagate through question ranking, question selection, and simulated learning utility.
+このリポジトリは、Knowledge Tracing の予測性能の差が、問題順位付け、問題選択、シミュレーション上の学習効用へどのように伝播するかを調べます。
 
 ```text
-Prediction
+予測（Prediction）
     ↓
-Ranking
+問題順位付け（Ranking）
     ↓
-Selection
+問題選択（Selection）
     ↓
-Learning Utility
+学習効用（Learning Utility）
 ```
 
-The study is separated from the ConceptBook application so the experimental specification can stay fixed while ConceptBook continues to change.
+実験仕様を固定したまま ConceptBook 本体の変更を続けられるよう、この研究は ConceptBook アプリケーションから分けています。
 
-## Scope
+## 範囲
 
-The objects of comparison are learner models and the policies that consume their predictions or state estimates. Candidate models include BKT, PFA, and HLR. Current ConceptBook Weighting is a non-model baseline, reproduced from a frozen specification rather than imported from ConceptBook.
+比較の対象は、学習者モデル（Learner Model）と、その予測または状態推定を使う出題方策（Policy）です。候補モデルには BKT、PFA、HLR があります。現行ConceptBook重み付け（Current ConceptBook Weighting）はモデルを使わないベースライン（Baseline）であり、ConceptBook から import するのではなく、固定した仕様から再現します。
 
-The generative learner that simulates practice and answers is a separate component. It is not identified with any model under evaluation. See [generative-learner.md](generative-learner.md).
+練習と回答をシミュレートする生成学習者モデル（Generative Learner）は、別の構成要素です。評価対象のどのモデルとも同一視しません。詳細は [generative-learner.md](generative-learner.md) を参照してください。
 
-Policies that turn a prediction or state estimate into a ranking and a selection are also separate from the learner model. That mapping is not yet specified. See [policies.md](policies.md).
+予測または状態推定を、問題順位付けと問題選択へ変える出題方策も、学習者モデルとは別です。その対応はまだ仕様になっていません。詳細は [policies.md](policies.md) を参照してください。
 
-Metrics are organized in four layers that match the propagation path. A single custom propagation rate is not defined. See [metrics.md](metrics.md).
+指標は、伝播の経路に対応する4層に分けます。独自の伝播率は定義しません。詳細は [metrics.md](metrics.md) を参照してください。
 
-## What a simulation result means
+## シミュレーション結果が意味すること
 
-A run estimates quantities inside a declared generative world. Agreement across worlds is evidence that a pattern is robust to those assumptions. A result in one world is not a measurement of human learning, and it is not a claim that one knowledge-tracing model should replace another in ConceptBook.
+1回の実行は、宣言された生成世界の中の量を推定します。複数の世界で一致することは、そのパターンがそれらの仮定に対して頑健であることの証拠です。一つの世界での結果は、人間の学習の測定ではありません。また、ある Knowledge Tracing モデルを ConceptBook 上の別のモデルと置き換えるべきだ、という主張でもありません。
 
-## Research questions
+## 研究上の問い
 
-### RQ1 — Prediction
+### RQ1 — 予測（Prediction）
 
-How much do models such as BKT, PFA, and HLR differ in predictive accuracy and in the accuracy of their latent-state estimates?
+BKT、PFA、HLR などのモデルのあいだで、予測の正確さと潜在状態の推定の正確さはどの程度違うか。
 
-Candidate metrics:
+候補指標：
 
 - Brier Score
 - Log Loss
 - AUC
-- Calibration Error
-- State RMSE
-- State MAE
+- キャリブレーション誤差（Calibration Error）
+- 状態の RMSE（State RMSE）
+- 状態の MAE（State MAE）
 
-### RQ2 — Ranking
+### RQ2 — 問題順位付け（Ranking）
 
-How far does a difference in prediction quality change the ranking of candidate questions?
+予測性能の差は、候補問題の順位をどの程度変えるか。
 
-Candidates:
+候補：
 
-- Spearman correlation
-- Kendall's tau
-- Top-k overlap
-- Rank displacement
+- スピアマン順位相関（Spearman correlation）
+- ケンドールの順位相関（Kendall's tau）
+- 上位k件の重なり（Top-k overlap）
+- 順位の変位（Rank displacement）
 
-### RQ3 — Selection
+### RQ3 — 問題選択（Selection）
 
-How far does a ranking difference become a difference in the question that is actually selected?
+順位の差は、実際に選ばれる問題の差へどの程度なるか。
 
-Candidates:
+候補：
 
-- Top-1 agreement
-- Top-k Jaccard similarity
-- Selection disagreement rate
-- Selection regret
+- 第1位の一致率（Top-1 agreement）
+- 上位k件のジャカード類似度（Top-k Jaccard similarity）
+- 選択不一致率（Selection disagreement rate）
+- 選択後悔値（Selection Regret）
 
-### RQ4 — Learning Utility
+### RQ4 — 学習効用（Learning Utility）
 
-How far does a selection difference become a difference in simulated learning efficiency?
+選択の差は、シミュレーション上の学習効率の差へどの程度なるか。
 
-Primary candidate:
+主候補：
 
-- Trials to Mastery
+- 習熟到達までの試行数（Trials to Mastery）
 
-Secondary candidates:
+副次候補：
 
-- Time to Mastery
-- Retention
-- Final Mastery
-- Wasted Practice Ratio
-- Neglected Concept Rate
-- Cumulative Selection Regret
+- 習熟到達までの時間（Time to Mastery）
+- 保持（Retention）
+- 最終習熟度（Final Mastery）
+- 無駄な練習の割合（Wasted Practice Ratio）
+- 練習不足の概念の割合（Neglected Concept Rate）
+- 累積選択後悔値（Cumulative Selection Regret）
 
-### RQ5 — Propagation
+### RQ5 — 伝播（Propagation）
 
-At each step from prediction to ranking, selection, and utility, how much of the upstream difference is preserved, amplified, or attenuated?
+予測から問題順位付け、問題選択、学習効用までの各段階で、上流の差はどの程度維持され、増幅され、減衰するか。
 
-This question is answered by comparing the layer-wise metrics above. A separate propagation-rate formula is intentionally undefined until those comparisons show what summary would be interpretable.
+この問いは、上に挙げた層ごとの指標を比較して答えます。その比較から、解釈できる要約が何であるかが見えるまで、別個の伝播率の式は意図的に定義しません。
 
-### RQ6 — Saturation
+### RQ6 — 飽和（Saturation）
 
-Is there a region in which further improvement in prediction quality yields little or no improvement in pedagogical utility?
+予測性能をさらに改善しても、教育的効用（Pedagogical Utility）がほとんど、あるいはまったく改善しない領域があるか。
 
-## Hypotheses
+## 仮説
 
-These are candidate hypotheses, not findings.
+これらは仮説の候補であり、知見ではありません。
 
 ### H1
 
-A difference in prediction does not propagate completely into a difference in ranking.
+予測の差は、問題順位付けの差へ完全には伝播しない。
 
 ### H2
 
-A difference in ranking does not propagate completely into a difference in selection.
+問題順位付けの差は、問題選択の差へ完全には伝播しない。
 
 ### H3
 
-Not every difference in selection becomes a difference in learning utility.
+問題選択の差のすべてが、学習効用の差になるわけではない。
 
-### Central hypothesis
+### 中心仮説
 
 ```text
 Δ Prediction ≠ Δ Pedagogical Utility
 ```
 
-This inequality is the claim under test. It is not a conclusion of the study, and it is not assumed when worlds, policies, or metrics are defined.
+この不等式は検証対象の主張です。研究の結論ではありません。世界、出題方策、指標を定義するときに、この不等式を前提にもしません。
 
-## Relationship to ConceptBook
+## ConceptBook との関係
 
 ```text
 ConceptBook
     ↓
-Current Weighting specification
+現行の重み付け仕様（Current Weighting specification）
     ↓
 adaptive-learning-simulation
     ↓
-independent reproduction
+独立した再実装（independent reproduction）
     ↓
-comparison with other policies
+他の出題方策との比較（comparison with other policies）
 ```
 
-ConceptBook contributes the current weighting specification that this repository will copy, freeze, and reimplement. The application is not a runtime dependency. Conformance tests, added when the reproduction exists, will check that the frozen copy matches the specification recorded for the paper.
+ConceptBook が渡すのは、このリポジトリが写し、固定し、再実装する現行の重み付け仕様です。アプリケーションは実行時の依存関係ではありません。再実装ができてから追加する一致テストで、固定した写しが論文用に記録した仕様と一致するかを確認します。
 
-The version evaluated in a paper stays fixed here. Later edits to ConceptBook do not change that version and cannot make the reported comparison unreproducible.
+論文で評価した版は、ここに固定したままにします。ConceptBook への後からの編集は、その版を変えません。報告した比較を再現不能にもしません。
 
-The recorded weighting rules are in [policies.md](policies.md). They are documentation only. The baseline is not implemented in this change.
+記録した重み付け規則は [policies.md](policies.md) にあります。文書のみです。この変更ではベースラインを実装していません。
 
-## Components that must stay distinct
+## 分けたままにする構成要素
 
 ```text
-Generative world
-    simulated learning and answers
+生成世界（Generative world）
+    シミュレーション上の学習と回答
 
-Learner model
-    prediction and state estimate from observed history
+学習者モデル（Learner model）
+    観測履歴からの予測と状態推定
 
-Policy
-    ranking and selection from that estimate, or from a non-model rule
+出題方策（Policy）
+    その推定、またはモデルを使わない規則からの問題順位付けと問題選択
 ```
 
-Using one of BKT, PFA, or HLR as the data-generating process would couple the world to a model under test. The generative learner therefore follows its own assumptions, documented in [generative-learner.md](generative-learner.md).
+BKT、PFA、HLR のいずれかをデータ生成過程に使うと、世界と評価対象モデルが結びつきます。そのため生成学習者モデルは、独自の仮定に従います。仮定は [generative-learner.md](generative-learner.md) に書いてあります。
 
-## Out of scope for the current repository state
+## 現在のリポジトリ状態では対象外
 
-The following are not implemented:
+次は未実装です。
 
-- simulator
-- generative learner
-- BKT, PFA, HLR
-- Oracle policy
-- Current ConceptBook Weighting
-- experiment runner
-- metric calculation
-- plotting
-- language or package-manager setup
+- シミュレーター
+- 生成学習者モデル
+- BKT、PFA、HLR
+- オラクル方策（Oracle Policy）
+- 現行ConceptBook重み付け
+- 実験実行系
+- 指標の計算
+- 図の作成
+- 言語またはパッケージ管理の設定
 - CI
-- database
+- データベース
 - UI
 
-## Design items left open
+## 未確定の設計事項
 
-The documents name candidates. They do not freeze the following:
+文書が名前を挙げているのは候補です。次は固定していません。
 
-- mastery criterion and stopping rule used by Trials to Mastery and related utility metrics
-- numeric thresholds inside Current ConceptBook Weighting that are only named qualitatively in the source notes (accuracy bands, high-accuracy cutoff)
-- the map from a BKT, PFA, or HLR estimate to a question score
-- the response model, which has a leading candidate but is not a frozen specification
-- the equation for World C
-- how explicit time and inter-trial gaps are generated in worlds that use time
-- item pool, concept structure, and the horizon of a simulated session
-- implementation language and package manager
+- 習熟到達までの試行数、および関連する効用指標が使う習熟基準と停止規則
+- 現行ConceptBook重み付けのうち、元メモでは定性的にしか書かれていない数値の境界（正答率の区分、高正答率のカットオフ）
+- BKT、PFA、HLR の推定から問題スコアへの対応
+- 回答モデル。有力候補はあるが、固定した仕様ではない
+- World C の式
+- 時間を使う世界で、明示的な時間と試行間隔をどう生成するか
+- 問題集合、概念構造、シミュレーションするセッションの期間
+- 実装言語とパッケージ管理

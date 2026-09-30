@@ -1,67 +1,67 @@
-# Policies
+# 出題方策
 
-A policy chooses the next question. A learner model supplies a prediction or a state estimate. The policy is the map from that estimate, or from a rule that does not use a model, to a ranking and then a selection.
+出題方策（Policy）は、次の問題を選びます。学習者モデル（Learner Model）は、予測または状態推定を渡します。出題方策は、その推定、またはモデルを使わない規則を、問題順位付け（Ranking）へ、続いて問題選択（Selection）へ写す対応です。
 
 ```text
-Learner Model
+学習者モデル（Learner Model）
     ↓
-Prediction / State Estimate
+予測 / 状態推定（Prediction / State Estimate）
     ↓
-Policy
+出題方策（Policy）
     ↓
-Ranking
+問題順位付け（Ranking）
     ↓
-Selection
+問題選択（Selection）
 ```
 
-BKT, PFA, and HLR are learner models. They are not policies. The map from each model's estimate to "which question is chosen" is not yet defined. Until that map is written down, a named model-based policy is a placeholder for a family, not an algorithm.
+BKT、PFA、HLR は学習者モデルです。出題方策ではありません。各モデルの推定から「どの問題を選ぶか」への対応は、まだ定義していません。その対応が書かれるまで、名前の付いたモデル準拠の出題方策は、算法ではなく、一族の仮置きです。
 
-Non-model baselines enter at the policy step. They do not produce a latent-state estimate.
+モデルを使わないベースライン（Baseline）は、出題方策の段階に入ります。潜在状態の推定は出しません。
 
-## Baselines
+## ベースライン
 
-- **Random** — select from the eligible pool without using history or a model.
-- **Sequential** — select in a fixed item order.
-- **Current ConceptBook Weighting** — select by the frozen weighting specification below.
+- **無作為（Random）** — 履歴もモデルも使わず、選択可能な集合から選ぶ。
+- **順次（Sequential）** — 固定した問題順で選ぶ。
+- **現行ConceptBook重み付け（Current ConceptBook Weighting）** — 下記の、固定する重み付け仕様で選ぶ。
 
-The sampling rule for Current ConceptBook Weighting, as recorded, is weighted sampling without replacement. It is not "always take the unique maximum." Comparisons that need a deterministic top-1 must state how ties and weighted draws are resolved.
+記録されている現行ConceptBook重み付けの抽出規則は、非復元の重み付き抽出（weighted sampling without replacement）です。「一意な最大を常に取る」ではありません。決定的な第1位が必要な比較は、同点と重み付き抽出をどう解決するかを述べます。
 
-## Model-based policies
+## モデルに基づく出題方策
 
-- **BKT-based Policy** — ranking and selection from a BKT prediction or state estimate. The score that ranks items is unspecified.
-- **PFA-based Policy** — ranking and selection from a PFA prediction or state estimate. The score that ranks items is unspecified.
-- **HLR-based Policy** — ranking and selection from an HLR prediction or state estimate. The score that ranks items is unspecified.
+- **BKT に基づく出題方策（BKT-based Policy）** — BKT の予測または状態推定から、問題順位付けと問題選択を行う。問題を順位付けるスコアは未指定。
+- **PFA に基づく出題方策（PFA-based Policy）** — PFA の予測または状態推定から、問題順位付けと問題選択を行う。問題を順位付けるスコアは未指定。
+- **HLR に基づく出題方策（HLR-based Policy）** — HLR の予測または状態推定から、問題順位付けと問題選択を行う。問題を順位付けるスコアは未指定。
 
-Each of these needs an explicit scoring function before an experiment can attribute a selection difference to the learner model rather than to an unstated ranking rule.
+選択の差を、書かれていない順位付け規則ではなく学習者モデルに帰属させるには、それぞれの実験の前に、明示的なスコア関数が必要です。
 
-## Upper bound
+## 上界
 
-- **Oracle Policy** — selection that may use privileged information from the generative world, such as the true latent state. The information set and the objective the oracle optimizes are not yet defined.
+- **オラクル方策（Oracle Policy）** — 生成世界の特権的な情報、たとえば真の潜在状態を使ってよい選択。オラクルが見る情報の集合と、最適化する目的は未定義。
 
-The oracle is an upper reference for utility under a stated objective. It is not a learner model and it is not a fair competitor on prediction metrics, because those metrics assume the model sees only the observation history.
+オラクルは、述べられた目的のもとでの効用の上側の参照です。学習者モデルではありません。予測指標での公正な比較相手でもありません。予測指標は、モデルが観測履歴だけを見ることを前提にするからです。
 
-## Current ConceptBook Weighting
+## 現行ConceptBook重み付け
 
-This is the baseline specification to copy into this repository and keep unchanged for a paper. It is documentation of the current ConceptBook rule. It is not an implementation, and this repository does not import ConceptBook.
+これは、このリポジトリへ写し、論文のあいだ変えないベースライン仕様です。現行の ConceptBook の規則を文書化したものです。実装ではなく、このリポジトリは ConceptBook を import しません。
 
-Recorded adjustments:
+記録した補正：
 
-| Condition | Adjustment |
+| 条件 | 補正 |
 | --- | --- |
-| Unanswered | `+10` |
-| Incorrect-answer count | `incorrect × 3` |
-| Accuracy | `+6` / `+3` |
-| Elapsed time of 7 days | `+5` |
-| Elapsed time of 30 days | `+8` |
-| Elapsed time within 1 day | `-4` |
-| Correct on the immediately previous attempt | a further `-2` |
-| High accuracy | `-3` |
-| Minimum weight | `1` |
+| 未回答 | `+10` |
+| 誤答回数 | `incorrect × 3` |
+| 正答率 | `+6` / `+3` |
+| 経過が7日 | `+5` |
+| 経過が30日 | `+8` |
+| 経過が1日以内 | `-4` |
+| 直前の試行が正答 | さらに `-2` |
+| 高正答率 | `-3` |
+| 重みの下限 | `1` |
 
-Selection uses weighted sampling without replacement.
+選択には、非復元の重み付き抽出を使います。
 
-The purpose of copying this table is to freeze the version that a paper evaluates. Later changes in ConceptBook must not move the baseline out from under a reported result. When the rule is reimplemented, conformance tests should compare this repository's copy with the specification that was current at the time of the freeze.
+この表を写す目的は、論文が評価する版を固定することです。ConceptBook への後からの変更で、報告済みの結果の下にあるベースラインが動いてはいけません。規則を再実装するときは、一致テストで、このリポジトリの写しと、固定した時点で現行だった仕様を比べます。
 
-Two boundaries are named but not numeric in this record: which accuracy values receive `+6` versus `+3`, and which accuracy value counts as high accuracy for the `-3` adjustment. Those cutoffs are part of the freeze. They are to be copied from ConceptBook when the reproduction is specified, and then left unchanged for the paper. They are not invented here.
+この記録で名前だけあり、数値になっていない境界が二つあります。どの正答率に `+6` と `+3` のどちらを付けるか、そして `-3` の補正で高正答率と数える正答率はどれかです。これらのカットオフは固定の一部です。再実装を仕様化するときに ConceptBook から写し、その後は論文のために変えないでおきます。ここでは作らない値です。
 
-How overlapping time adjustments combine (7 days and 30 days, or a within-1-day penalty together with a later bonus) is also part of that freeze and is not resolved in this note.
+重なる時間補正をどう合わせるか（7日と30日、または1日以内の減点とその後の加点）も、その固定の一部であり、このメモでは解決していません。

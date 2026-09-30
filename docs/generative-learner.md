@@ -1,130 +1,132 @@
-# Generative Learner
+# 生成学習者モデル
 
-The generative learner is the simulated world. It produces practice, knowledge change, and observed answers. Models under evaluation (BKT, PFA, HLR, and others) are fitted to or scored against that world. They do not define it.
+生成学習者モデル（Generative Learner）は、シミュレーション上の世界です。練習、知識の変化、観測される回答を生み出します。評価対象のモデル（BKT、PFA、HLR など）は、その世界に適合させるか、その世界に対して採点します。世界そのものを定義するのは、評価対象のモデルではありません。
 
-## Design principles
+## 設計原則
 
-- None of BKT, PFA, or HLR is used as the true data-generating model.
-- The model under evaluation and the generative world stay independent.
-- Robustness is assessed across multiple worlds, so a result is not an artifact of one learning assumption.
+- BKT、PFA、HLR のいずれも、真のデータ生成モデルとしては使わない。
+- 評価対象のモデルと生成世界は、独立したままにする。
+- 頑健性は複数の世界にわたって見る。結果が一つの学習仮定の産物にならないようにするためである。
 
-A world states its learning rule, forgetting rule, and whether time is explicit. Changing those assumptions is a change of world, not a hidden parameter of the model being scored.
+一つの世界は、学習の規則、忘却（Forgetting）の規則、時間を明示するかどうかを述べます。それらの仮定を変えることは、世界を変えることです。採点されるモデルの隠れたパラメータを変えることではありません。
 
-## Worlds
+## 世界
 
-### World A — Learning-only
+### World A — 学習のみ（Learning-only）
 
-Minimal baseline.
+最小のベースライン（Baseline）です。
 
-- learning is present
-- forgetting is absent
-- spacing effects are absent
+- 学習はある
+- 忘却はない
+- 間隔効果（spacing effect）はない
 
-World A checks whether a propagation pattern already appears when the only knowledge change is learning from practice.
+World A は、知識の変化が練習による学習だけのときにも、伝播のパターンがすでに現れるかを確認します。
 
-### World B-E — Exponential Forgetting
+### World B-E — 指数忘却（Exponential Forgetting）
 
-Primary analysis candidate.
+主分析の候補です。
 
-- diminishing learning
-- exponential forgetting
-- explicit time
+- 逓減する学習
+- 指数忘却
+- 明示的な時間
 
-Candidate forgetting update:
+忘却更新の候補：
 
 ```text
 K(t + Δ) = K(t) exp(-λ Δ)
 ```
 
-This equation is a candidate form for the forgetting step. It is not a complete world specification. The learning step, the distribution of `Δ`, and the parameters remain to be fixed.
+この式は、忘却の段階の候補です。世界の仕様全体ではありません。学習の段階、`Δ` の分布、パラメータは未確定です。
 
-### World B-P — Power-law Forgetting
+### World B-P — べき乗忘却（Power-law Forgetting）
 
-Primary analysis candidate.
+主分析の候補です。
 
-- diminishing learning
-- power-law forgetting
-- explicit time
+- 逓減する学習
+- べき乗忘却
+- 明示的な時間
 
-Candidate forgetting update:
+忘却更新の候補：
 
 ```text
 K(t + Δ) = K(t) (1 + λ Δ)^(-β)
 ```
 
-World B-E and World B-P are alternatives, not a ranking of which forgetting curve is true of human memory. Running both asks whether a propagation result depends on the forgetting family.
+World B-E と World B-P は、人間の記憶にとってどちらの忘却曲線が正しいかの順位付けではありません。両方を走らせるのは、伝播の結果が忘却の族に依存するかを問うためです。
 
-### World C — Cognitive / Spacing Stress Test
+### World C — 認知的・間隔のストレステスト（Cognitive / Spacing Stress Test）
 
-Stress test, not a primary analysis world until its equation is chosen.
+式が決まるまでは、主分析の世界ではなくストレステストです。
 
-- dependence on practice history
-- activation- or trace-based state
-- a more explicit spacing effect
-- informed by the Pavlik–Anderson and ACT-R line of spacing models
+- 練習履歴への依存
+- 活性化（activation）または痕跡（trace）に基づく状態
+- より明示的な間隔効果
+- Pavlik–Anderson および ACT-R 系の間隔モデルを参考にする
 
-No equation is fixed for World C. Adopting a formula requires a separate design note that states the state variables, the activation or trace update, and how that state enters the answer model.
+World C の式は固定していません。式を採用するには、状態変数、活性化または痕跡の更新、その状態が回答モデルへどう入るかを書いた、別の設計メモが必要です。
 
-## Response model
+## 回答モデル
 
-Leading candidate, not a frozen specification.
+有力候補であり、固定した仕様ではありません。
 
-Latent ability:
+潜在能力：
 
 ```text
 a_u,c,t ∈ R
 ```
 
-Competence, as a displayed probability scale:
+コンピテンス（competence）。表示上の確率尺度です。
 
 ```text
 K = sigmoid(a)
 ```
 
-Item difficulty:
+問題難易度（Item Difficulty）：
 
 ```text
 d_q
 ```
 
-Probability of a correct response:
+正答確率：
 
 ```text
 P(correct) = G + (1 - G - S) * sigmoid(a - d)
 ```
 
-where
+ここで
 
-- `G` is guess
-- `S` is slip / lapse
-- `d` is item difficulty
+- `G` は当て推量（Guess）
+- `S` はうっかり誤答（Slip / Lapse）
+- `d` は問題難易度（Item Difficulty）
 
-`K` and `a` are two views of the same latent competence in this candidate. Worlds that update `K` directly need a stated map back to `a` before this response equation can be used. Parameter values, priors, and whether `G` and `S` vary by item or learner are unset.
+この候補では、`K` と `a` は同じ潜在コンピテンスの二つの見方です。`K` を直接更新する世界は、この回答式を使う前に、`a` へ戻す対応を明示する必要があります。パラメータの値、事前分布、`G` と `S` が問題ごとまたは学習者ごとに変わるかどうかは、未設定です。
 
-## Learning gain
+## 学習増分
 
-Knowledge updates use a diminishing return. An unbounded additive gain is not the candidate.
+知識の更新には逓減する利得を使います。際限なく加算する利得は候補にしません。
 
-Example:
+例：
 
 ```text
 K+ = K + L (1 - K)
 ```
 
-`L` is a learning-rate term in `(0, 1]` for this example. Its dependence on history, time, or the current item is world-specific and not yet fixed.
+`L` は、この例では `(0, 1]` の学習率の項です。履歴、時間、現在の問題への依存は世界ごとに異なり、まだ固定していません。
 
-In the primary worlds, the learning gain is not taken directly from whether the response was correct or incorrect. The default causal story is:
+主たる世界では、学習増分（Learning Gain）を、回答が正しかったか誤りだったかから直接取りません。基本の因果は次です。
 
 ```text
 practice opportunity → learning
 ```
 
-A practice opportunity updates knowledge. The observed correctness is an output of the response model, not the input that sets the gain.
+日本語では「練習の機会 → 学習」です。
 
-The following are sensitivity analyses, kept separate from the primary worlds:
+練習の機会が知識を更新します。観測された正誤は回答モデルの出力であり、増分を決める入力ではありません。
 
-- successful retrieval bonus
-- incorrect response plus feedback
-- other correctness-dependent learning rules
+次は感度分析（Sensitivity Analysis）であり、主たる世界からは分けておきます。
 
-A sensitivity world must say which of these modifiers it adds and must not be pooled with the primary estimate without a label.
+- 検索に成功したときの上乗せ（successful retrieval bonus）
+- 誤答にフィードバックが付く場合（incorrect response plus feedback）
+- その他の、正誤に依存する学習規則（correctness-dependent learning rules）
+
+感度分析用の世界は、これらの修飾のどれを加えるかを述べます。ラベルなしに、主たる推定と混ぜません。

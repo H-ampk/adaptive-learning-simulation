@@ -1,68 +1,70 @@
 # Adaptive Learning Simulation
 
-A simulation framework for evaluating how differences in learner-model prediction quality propagate through question ranking, selection, and simulated learning utility.
+学習者モデルの予測性能の差が、問題順位付け、問題選択、最終的な学習効用へどのように伝播するかを検証するためのシミュレーション研究用リポジトリです。
+
+研究の中心：
 
 ```text
-Prediction
+予測（Prediction）
     ↓
-Ranking
+問題順位付け（Ranking）
     ↓
-Selection
+問題選択（Selection）
     ↓
-Learning Utility
+学習効用（Learning Utility）
 ```
 
-This repository is a research project, separate from the ConceptBook application. It exists so simulation studies can be reproduced without depending on later changes to ConceptBook itself.
+このリポジトリは、ConceptBook 本体とは独立した研究用リポジトリです。ConceptBook 側がその後どう変わっても、シミュレーション研究を再現できるように分けています。
 
-## Question
+## 研究上の問い
 
-The study asks how a difference in prediction quality moves through ranking, selection, and simulated learning utility. The working hypothesis is:
+この研究が問うのは、予測性能（Prediction Quality）の差が、問題順位付け、問題選択、シミュレーション上の学習効用へどのように移るかです。作業仮説は次のとおりです。
 
 ```text
 Δ Prediction ≠ Δ Pedagogical Utility
 ```
 
-That statement is a claim to be tested. It is not a result of this repository.
+これは、予測性能の差と教育的効用（Pedagogical Utility）の差が同じではない、という検証対象の主張です。このリポジトリの結論ではありません。
 
-## Planned comparisons
+## 比較の予定
 
-- Learner models such as BKT, PFA, and HLR are candidates for comparison.
-- Current ConceptBook Weighting is a baseline to be reproduced from a specification frozen in this repository.
-- The generative learner that produces simulated answers and learning is kept independent of the knowledge-tracing models under evaluation.
-- Several generative worlds are used so conclusions are not tied to a single learning assumption.
+- 比較候補の学習者モデル（Learner Model）には、BKT、PFA、HLR がある。
+- 現行ConceptBook重み付け（Current ConceptBook Weighting）は、このリポジトリ内で固定した仕様から再現するベースライン（Baseline）である。
+- 模擬の回答と学習を生み出す生成学習者モデル（Generative Learner）は、評価対象の Knowledge Tracing モデルから独立させる。
+- 結論を単一の学習仮定に縛らないため、複数の生成世界を用いる。
 
-Simulation results describe those generative worlds. They are not, by themselves, evidence about learning effects in human learners.
+シミュレーション結果は、それらの生成世界についての記述です。それだけでは、人間の学習者における学習効果の証拠にはなりません。
 
-Reproducibility is a requirement: documented assumptions, frozen policy specifications, and saved configurations should be enough to rerun a study.
+再現性は要件です。文書化した仮定、固定した出題方策（Policy）の仕様、保存した設定があれば、研究を再実行できる状態にします。
 
-## Relationship to ConceptBook
+## ConceptBook との関係
 
-ConceptBook is one object of comparison, through its current weighting specification:
+ConceptBook は、現行の重み付け仕様を通じた比較対象の一つです。
 
 ```text
 ConceptBook
     ↓
-Current Weighting specification
+現行の重み付け仕様（Current Weighting specification）
     ↓
 adaptive-learning-simulation
     ↓
-independent reproduction
+独立した再実装（independent reproduction）
     ↓
-comparison with other policies
+他の出題方策との比較（comparison with other policies）
 ```
 
-This repository does not import ConceptBook as a library. The specification used in a paper will be copied here and checked with conformance tests, so a later change in ConceptBook cannot make that study unreproducible.
+このリポジトリは ConceptBook をライブラリとして import しません。論文で使う仕様はここに写し、一致テストで照合します。これにより、ConceptBook 側の後からの変更で、その研究が再現できなくなることを防ぎます。
 
-## Layout
+## ディレクトリ構成
 
-| Path | Role |
+| パス | 役割 |
 | --- | --- |
-| `docs/` | Research design, generative learner, policies, metrics, related work |
-| `configs/` | Experiment configurations (empty) |
-| `src/` | Simulation code (not implemented) |
-| `tests/` | Tests (not implemented) |
-| `results/` | Experiment outputs; `results/raw/` and `results/tmp/` are ignored |
+| `docs/` | 研究設計、生成学習者モデル、出題方策、指標、関連研究 |
+| `configs/` | 実験設定（空） |
+| `src/` | シミュレーションのコード（未実装） |
+| `tests/` | テスト（未実装） |
+| `results/` | 実験出力。`results/raw/` と `results/tmp/` は Git の対象外 |
 
-## Status
+## 現状
 
-Research documents only. The simulator, generative learner, learner models, policies, metrics, experiment runner, and plots are not implemented.
+あるのは研究文書だけです。シミュレーター、生成学習者モデル、学習者モデル、出題方策、指標、実験実行系、図の作成は未実装です。
