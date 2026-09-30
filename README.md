@@ -37,6 +37,16 @@
 
 再現性は要件です。文書化した仮定、固定した出題方策（Policy）の仕様、保存した設定があれば、研究を再実行できる状態にします。
 
+このリポジトリでは、研究の再現性を重視し、Julia の `Project.toml` / `Manifest.toml` と明示的な乱数 seed を使用する。
+
+## 技術構成
+
+- Julia
+- StableRNGs.jl
+- Distributions.jl
+- DataFrames.jl
+- CSV.jl
+
 ## ConceptBook との関係
 
 ConceptBook は、現行の重み付け仕様を通じた比較対象の一つです。
@@ -61,10 +71,10 @@ adaptive-learning-simulation
 | --- | --- |
 | `docs/` | 研究設計、生成学習者モデル、出題方策、指標、関連研究 |
 | `configs/` | 実験設定（空） |
-| `src/` | シミュレーションのコード（未実装） |
-| `tests/` | テスト（未実装） |
+| `src/` | Julia パッケージ `AdaptiveLearningSimulation`（研究ロジックは未実装） |
+| `test/` | Julia の package test |
 | `results/` | 実験出力。`results/raw/` と `results/tmp/` は Git の対象外 |
 
 ## 現状
 
-あるのは研究文書だけです。シミュレーター、生成学習者モデル、学習者モデル、出題方策、指標、実験実行系、図の作成は未実装です。
+Julia の package 環境は初期化済みです。シミュレーター、生成学習者モデル、学習者モデル、出題方策、指標、実験実行系、図の作成は未実装です。
