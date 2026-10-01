@@ -20,7 +20,7 @@
 
 比較の対象は、学習者モデル（Learner Model）と、その予測または状態推定を使う出題方策（Policy）です。候補モデルには BKT、PFA、HLR があります。現行ConceptBook重み付け（Current ConceptBook Weighting）はモデルを使わないベースライン（Baseline）であり、ConceptBook から import するのではなく、固定した仕様から再現します。
 
-練習と回答をシミュレートする生成学習者モデル（Generative Learner）は、別の構成要素です。評価対象のどのモデルとも同一視しません。詳細は [generative-learner.md](generative-learner.md) を参照してください。
+練習と回答をシミュレートする生成学習者モデル（Generative Learner）は、別の構成要素です。評価対象のどのモデルとも同一視しません。真の潜在状態の正本は `K[u, c, t] ∈ [0, 1]` です。`a = logit(K)` は保存しない派生値です。World A / B-E / B-P の学習と忘却は `K` 空間で更新します。詳細は [generative-learner.md](generative-learner.md) を参照してください。
 
 予測または状態推定を、問題順位付けと問題選択へ変える出題方策も、学習者モデルとは別です。その対応はまだ仕様になっていません。詳細は [policies.md](policies.md) を参照してください。
 
@@ -181,7 +181,7 @@ BKT、PFA、HLR のいずれかをデータ生成過程に使うと、世界と�
 
 ## 未確定の設計事項
 
-文書が名前を挙げているのは候補です。次は固定していません。
+文書が名前を挙げているのは候補です。潜在状態の正本 `K` と、World A / B-E / B-P の学習・忘却を `K` 空間で行うことは固定しています。`a` は派生値です。World C は `K` 以外の内部状態を保持してよく、外部へ出す canonical latent competence は `K` です。次は固定していません。
 
 - 習熟到達までの試行数、および関連する効用指標が使う習熟基準と停止規則
 - 現行ConceptBook重み付けのうち、元メモでは定性的にしか書かれていない数値の境界（正答率の区分、高正答率のカットオフ）
